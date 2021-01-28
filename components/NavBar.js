@@ -8,7 +8,7 @@ function NavBar() {
 	const router = useRouter();
 
 	const [state, dispatch] = useContext(DataContext);
-	console.log(state);
+	// console.log(state);
 
 	const { auth } = state;
 
