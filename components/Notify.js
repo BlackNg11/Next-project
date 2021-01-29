@@ -8,7 +8,7 @@ const Notify = () => {
 	const { notify } = state;
 
 	return (
-		<>
+		<div>
 			{notify.loading && <Loading />}
 			{notify.error && (
 				<Toast
@@ -34,7 +34,7 @@ const Notify = () => {
 					bgColor="bg-success "
 				/>
 			)}
-		</>
+		</div>
 	);
 };
 

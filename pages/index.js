@@ -6,8 +6,6 @@ import ProductItem from "../components/product/ProductItem";
 const Home = (props) => {
 	const [products, setProducts] = useState(props.products);
 
-	console.log(products);
-
 	return (
 		<div className="products">
 			<Head>
