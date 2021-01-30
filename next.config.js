@@ -7,5 +7,7 @@ module.exports = {
 			"xwF&df$@Xa_aqL7F+ay@$c23!Jq-fdZp!5pM^pMs_Fu8aEQVAH",
 		REFRESH_TOKEN_SECRET:
 			"?wX%YP=du@9KDRV4ejV=#?YMnP5YxWL%bW+DLXQ*^fV4n7Nr_VQpqj?x#n22t-pk7UtVqxeVLHxLXhdZ",
+		PAYPAL_CLIENT_ID:
+			"AYHLUuWKu4x5w4_Yj3Sed7LxHAYdDfgJrrBp5c8niflsCqcwc_VsATo208xPLwHdve8jW0arMaB_KnLU",
 	},
 };
