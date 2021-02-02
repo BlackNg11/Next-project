@@ -31,8 +31,6 @@ const uploadInfo = async (req, res) => {
 			}
 		);
 
-		console.log(newUser);
-
 		res.json({
 			msg: "Update Success",
 			// user: {

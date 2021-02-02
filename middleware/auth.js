@@ -14,7 +14,11 @@ const auth = async (req, res) => {
 		_id: decoded.id,
 	});
 
-	return user;
+	return {
+		id: user._id,
+		role: user.role,
+		root: user.root,
+	};
 };
 
 export default auth;

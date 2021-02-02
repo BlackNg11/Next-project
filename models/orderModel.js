@@ -20,6 +20,6 @@ const orderSchema = new mongoose.Schema(
 	}
 );
 
-let Dataset = mongoose.models.order || mongoose.model("product", orderSchema);
+let Dataset = mongoose.models.order || mongoose.model("order", orderSchema);
 
 export default Dataset;
