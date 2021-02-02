@@ -9,5 +9,8 @@ module.exports = {
 			"?wX%YP=du@9KDRV4ejV=#?YMnP5YxWL%bW+DLXQ*^fV4n7Nr_VQpqj?x#n22t-pk7UtVqxeVLHxLXhdZ",
 		PAYPAL_CLIENT_ID:
 			"AYHLUuWKu4x5w4_Yj3Sed7LxHAYdDfgJrrBp5c8niflsCqcwc_VsATo208xPLwHdve8jW0arMaB_KnLU",
+		CLOUD_UPLOAD_PRESET: "nextjs_project",
+		CLOUD_NAME: "dwviwhgyq",
+		CLOUD_API: "https://api.cloudinary.com/v1_1/dwviwhgyq/image/upload",
 	},
 };
