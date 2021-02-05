@@ -37,6 +37,22 @@ function NavBar() {
 		});
 	};
 
+	const adminRouter = () => {
+		return (
+			<div>
+				<Link href="/users">
+					<a className="dropdown-item">Users</a>
+				</Link>
+				<Link href="/create">
+					<a className="dropdown-item">Product</a>
+				</Link>
+				<Link href="/categories">
+					<a className="dropdown-item">Categories</a>
+				</Link>
+			</div>
+		);
+	};
+
 	const loggedRouter = () => (
 		<li className="nav-item dropdown">
 			<a
@@ -67,10 +83,11 @@ function NavBar() {
 				<Link href="/profile">
 					<a className="dropdown-item">Profile</a>
 				</Link>
-
-				<a className="dropdown-item" onClick={handleLogout}>
+				{auth.user.role === "admin" && adminRouter()}
+				<div className="dropdown-divider"></div>
+				<button className="dropdown-item" onClick={handleLogout}>
 					Logout
-				</a>
+				</button>
 			</div>
 		</li>
 	);

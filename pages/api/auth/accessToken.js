@@ -30,7 +30,7 @@ export default async (req, res) => {
 			user: {
 				name: user.name,
 				email: user.email,
-				role: user.avatar,
+				role: user.role,
 				avatar: user.avatar,
 				root: user.root,
 			},

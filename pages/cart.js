@@ -6,7 +6,7 @@ import CartItem from "../components/CartItem";
 import Link from "next/link";
 import { getData, postData } from "../utils/fetchData";
 import { useRouter } from "next/router";
-import PaypalBtn from "./paypalBtn";
+import PaypalBtn from "../components/paypalBtn";
 
 const Cart = () => {
 	const [state, dispatch] = useContext(DataContext);

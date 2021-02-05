@@ -34,38 +34,43 @@ function paypalBtn({ total, order }) {
 					});
 
 					return actions.order.capture().then(function (details) {
-						patchData(`order/${order._id}`, null, auth.token).then(
-							(res) => {
-								if (res.err)
-									return dispatch({
-										type: "NOTIFY",
-										payload: {
-											error: res.err,
-										},
-									});
-
-								dispatch(
-									updateItem(
-										orders,
-										order,
-										_id,
-										{
-											...order,
-											paid: true,
-											dateOfPayment: newData().toISOString(),
-										},
-										"ADD_ORDERS"
-									)
-								);
-
+						patchData(
+							`order/payment/${order._id}`,
+							{
+								paymentId: details.payer.payer_id,
+							},
+							auth.token
+						).then((res) => {
+							if (res.err)
 								return dispatch({
 									type: "NOTIFY",
 									payload: {
-										success: res.msg,
+										error: res.err,
 									},
 								});
-							}
-						);
+
+							dispatch(
+								updateItem(
+									orders,
+									order,
+									_id,
+									{
+										...order,
+										paid: true,
+										dateOfPayment: details.create_time,
+										method: "Paypal",
+									},
+									"ADD_ORDERS"
+								)
+							);
+
+							return dispatch({
+								type: "NOTIFY",
+								payload: {
+									success: res.msg,
+								},
+							});
+						});
 						// This function shows a transaction success message to your buyer.
 						alert(
 							"Transaction completed by " +

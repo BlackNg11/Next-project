@@ -16,8 +16,9 @@ function DetailOrder() {
 	useEffect(() => {
 		const newArr = orders.filter((order) => order._id === router.query.id);
 		setOrderDetail(newArr);
-		console.log(orderDetail);
 	}, [orders]);
+
+	if (!auth.user) return null;
 
 	return (
 		<div className="my-3">
@@ -34,7 +35,11 @@ function DetailOrder() {
 				</button>
 			</div>
 
-			<OrderDetail orderDetail={orderDetail} />
+			<OrderDetail
+				orderDetail={orderDetail}
+				state={state}
+				dispatch={dispatch}
+			/>
 		</div>
 	);
 }
