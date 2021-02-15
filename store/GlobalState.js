@@ -12,6 +12,7 @@ export const DataProvider = ({ children }) => {
 		modal: {},
 		orders: [],
 		users: [],
+		categories: [],
 	};
 
 	const [state, dispatch] = useReducer(reducers, initialState);
@@ -29,6 +30,19 @@ export const DataProvider = ({ children }) => {
 						token: res.access_token,
 						user: res.user,
 					},
+				});
+			});
+
+			getData("categories").then((res) => {
+				if (res.err)
+					return dispatch({
+						type: "NOTIFY",
+						payload: { err: res.err },
+					});
+
+				dispatch({
+					type: "ADD_CATEGORIES",
+					payload: res.categories,
 				});
 			});
 		}

@@ -86,6 +86,7 @@ function CartItem({ item, dispatch, cart }) {
 								data: cart,
 								id: item._id,
 								title: item.title,
+								type: "ADD_CART",
 							},
 						})
 					}

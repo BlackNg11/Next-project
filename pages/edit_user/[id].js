@@ -1,7 +1,9 @@
 import Head from "next/head";
 import { useContext, useState, useEffect } from "react";
 import { DataContext } from "../../store/GlobalState";
+import { updateItem } from "../../store/Actions";
 import { useRouter } from "next/router";
+import { patchData } from "../../utils/fetchData";
 
 function EditUser() {
 	const router = useRouter();
@@ -12,6 +14,7 @@ function EditUser() {
 
 	const [editUser, setEditUser] = useState([]);
 	const [checkAdmin, setCheckAdmin] = useState(false);
+	const [num, setNum] = useState(0);
 
 	useEffect(() => {
 		users.forEach((user) => {
@@ -22,7 +25,49 @@ function EditUser() {
 		});
 	}, [users]);
 
-	const handleCheck = () => {};
+	const handleCheck = () => {
+		setCheckAdmin(!checkAdmin);
+		setNum(num + 1);
+	};
+
+	const handleSubmit = () => {
+		let role = checkAdmin ? "admin" : "user";
+		if (num % 2 !== 0) {
+			dispatch({
+				type: "NOTIFY",
+				payload: {
+					loading: true,
+				},
+			});
+
+			patchData(`user/${editUser._id}`, { role }, auth.token).then(
+				(res) => {
+					if (res.err)
+						return dispatch({
+							type: "NOTIFY",
+							payload: { err: res.err },
+						});
+
+					dispatch(
+						updateItem(
+							users,
+							editUser._id,
+							{
+								...editUser,
+								role,
+							},
+							"ADD_USERS"
+						)
+					);
+
+					return dispatch({
+						type: "NOTIFY",
+						payload: { success: res.msg },
+					});
+				}
+			);
+		}
+	};
 
 	return (
 		<div className="edit_user my-3 w-100">
@@ -31,7 +76,8 @@ function EditUser() {
 			</Head>
 			<div>
 				<button className="btn btn-dark" onClick={() => router.back()}>
-					<i className="fas fa-long-arrow-alt-left"></i>Go Back
+					<i className="fas fa-long-arrow-alt-left" aria-hidden></i>Go
+					Back
 				</button>
 				<div className="col-md-4 mx-auto my-4">
 					<h2 className="text-uppercase text-secondary">Edit User</h2>
@@ -78,7 +124,9 @@ function EditUser() {
 						</label>
 					</div>
 
-					<button className="btn btn-dark">Update</button>
+					<button className="btn btn-dark" onClick={handleSubmit}>
+						Update
+					</button>
 				</div>
 			</div>
 		</div>

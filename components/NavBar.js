@@ -35,6 +35,8 @@ function NavBar() {
 				success: "Logged out !!!",
 			},
 		});
+
+		return router.push("/");
 	};
 
 	const adminRouter = () => {

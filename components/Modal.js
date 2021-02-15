@@ -1,13 +1,44 @@
 import { useContext } from "react";
 import { DataContext } from "../store/GlobalState.js";
 import { deleteItem } from "../store/Actions";
+import { deleteData } from "../utils/fetchData";
 
 function Modal() {
 	const [state, dispatch] = useContext(DataContext);
-	const { modal } = state;
+	const { modal, auth } = state;
 
 	const handleSubmit = () => {
-		dispatch(deleteItem(modal.data, modal.id, "ADD_CART"));
+		if (modal.type === "ADD_USERS") {
+			deleteData(`user/${modal.id}`, auth.token).then((res) => {
+				if (res.err)
+					return dispatch({
+						type: "NOTIFY",
+						payload: { err: res.err },
+					});
+
+				return dispatch({
+					type: "NOTIFY",
+					payload: { success: res.msg },
+				});
+			});
+		}
+
+		if (modal.type === "ADD_CATEGORIES") {
+			deleteData(`categories/${modal.id}`, auth.token).then((res) => {
+				if (res.err)
+					return dispatch({
+						type: "NOTIFY",
+						payload: { err: res.err },
+					});
+
+				return dispatch({
+					type: "NOTIFY",
+					payload: { success: res.msg },
+				});
+			});
+		}
+
+		dispatch(deleteItem(modal.data, modal.id, modal.type));
 		dispatch({
 			type: "ADD_MODAL",
 			payload: "",

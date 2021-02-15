@@ -5,7 +5,8 @@ import Link from "next/link";
 
 function Users() {
 	const [state, dispatch] = useContext(DataContext);
-	const { users, auth } = state;
+	const { users, auth, modal } = state;
+	if (!auth.user) return null;
 
 	return (
 		<div className="table-responsive">
@@ -59,7 +60,7 @@ function Users() {
 							<th>
 								<Link
 									href={
-										(auth.user.root && auth.user.email) ||
+										(auth.user.root && auth.user.email) !==
 										user.email
 											? `/edit_user/${user._id}`
 											: "#"
@@ -73,13 +74,24 @@ function Users() {
 									</a>
 								</Link>
 
-								{(auth.user.root && auth.user.email) ||
+								{(auth.user.root && auth.user.email) !==
 								user.email ? (
 									<i
 										className="fas fa-trash-alt text-danger ml-2"
 										title="Remove"
 										data-toggle="modal"
 										data-target="#exampleModal"
+										onClick={() =>
+											dispatch({
+												type: "ADD_MODAL",
+												payload: {
+													data: users,
+													id: user._id,
+													title: user.name,
+													type: "ADD_USERS",
+												},
+											})
+										}
 									></i>
 								) : null}
 							</th>
