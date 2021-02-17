@@ -5,7 +5,7 @@ import { addToCart } from "../../store/Actions";
 
 const ProductItem = ({ product }) => {
 	const [state, dispatch] = useContext(DataContext);
-	const { cart } = state;
+	const { cart, auth } = state;
 
 	const userLink = () => {
 		return (
@@ -29,6 +29,29 @@ const ProductItem = ({ product }) => {
 			</div>
 		);
 	};
+
+	const adminLink = () => {
+		return (
+			<div>
+				<Link href={`create/${product._id}`}>
+					<a
+						className="btn btn-info"
+						style={{ marginRight: "5px", flex: 1 }}
+					>
+						Edit
+					</a>
+				</Link>
+				<button
+					className="btn btn-danger"
+					style={{ marginLeft: "5px", flex: 1 }}
+				>
+					Delete
+				</button>
+			</div>
+		);
+	};
+
+	if (!auth.user) return null;
 
 	return (
 		<div className="card" style={{ width: "18rem" }}>
@@ -58,7 +81,9 @@ const ProductItem = ({ product }) => {
 					{product.description}
 				</p>
 				<div className="row justifu-content-between mx-0">
-					{userLink()}
+					{!auth.user || auth.user.role !== "admin"
+						? userLink()
+						: adminLink()}
 				</div>
 			</div>
 		</div>

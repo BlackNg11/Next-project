@@ -1,6 +1,9 @@
 import Head from "next/head";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { DataContext } from "../../store/GlobalState";
+import { imageUpload } from "../../utils/imageUpload";
+import { postData, getData, putData } from "../../utils/fetchData";
+import { useRouter } from "next/router";
 
 function ProductsManager() {
 	const initialState = {
@@ -14,19 +17,28 @@ function ProductsManager() {
 	};
 
 	const [product, setProduct] = useState(initialState);
-	const {
-		product_id,
-		title,
-		price,
-		inStock,
-		description,
-		content,
-		category,
-	} = product;
+	const { title, price, inStock, description, content, category } = product;
 
 	const [state, dispatch] = useContext(DataContext);
-	const { categories } = state;
+	const { categories, auth } = state;
 	const [images, setImages] = useState([]);
+	const [onEdit, setOnEdit] = useState(false);
+	const router = useRouter();
+	const { id } = router.query;
+
+	useEffect(() => {
+		if (id) {
+			setOnEdit(true);
+			getData(`product/${id}`).then((res) => {
+				setProduct(res.product);
+				setImages(res.product.images);
+			});
+		} else {
+			setOnEdit(false);
+			setProduct(initialState);
+			setImages([]);
+		}
+	}, [id]);
 
 	const handleChangeInput = (e) => {
 		const { name, value } = e.target;
@@ -81,22 +93,96 @@ function ProductsManager() {
 		setImages(newArr);
 	};
 
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+
+		if (auth.user.role !== "admin") {
+			return dispatch({
+				type: "NOTIFY",
+				payload: {
+					error: "Not Valid",
+				},
+			});
+		}
+
+		if (
+			!title ||
+			!price ||
+			!inStock ||
+			!description ||
+			!content ||
+			category === "all" ||
+			images.length === 0
+		) {
+			return dispatch({
+				type: "NOTIFY",
+				payload: {
+					error: "Please add all field",
+				},
+			});
+		}
+
+		dispatch({
+			type: "NOTIFY",
+			payload: {
+				loading: true,
+			},
+		});
+
+		let media = [];
+		const imgNewURL = images.filter((img) => !img.url);
+		const imgOldURL = images.filter((img) => img.url);
+
+		if (imgNewURL.length > 0) media = await imageUpload(imgNewURL);
+
+		let res;
+		if (onEdit) {
+			res = await putData(
+				`product/${id}`,
+				{ ...product, images: [...imgOldURL, ...media] },
+				auth.token
+			);
+
+			if (res.err) {
+				return dispatch({
+					type: "NOTIFY",
+					payload: {
+						error: res.err,
+					},
+				});
+			}
+		} else {
+			res = await postData(
+				"product",
+				{ ...product, images: [...imgOldURL, ...media] },
+				auth.token
+			);
+
+			if (res.err) {
+				return dispatch({
+					type: "NOTIFY",
+					payload: {
+						error: res.err,
+					},
+				});
+			}
+		}
+
+		return dispatch({
+			type: "NOTIFY",
+			payload: {
+				success: res.msg,
+			},
+		});
+	};
+
 	return (
 		<div>
 			<Head>
 				<title>Products Manager</title>
 			</Head>
-			<form className="row">
+			<form className="row" onSubmit={handleSubmit}>
 				<div className="col-md-6">
-					<input
-						type="text"
-						name="product_id"
-						placeholder="Product ID"
-						value={product_id}
-						className="d-block my-4 w-100 p2"
-						onChange={handleChangeInput}
-					/>
-
 					<input
 						type="text"
 						name="title"
@@ -108,6 +194,7 @@ function ProductsManager() {
 
 					<div className="row">
 						<div className="col-md-6">
+							<label htmlFor="price">Price</label>
 							<input
 								type="number"
 								name="price"
@@ -118,6 +205,7 @@ function ProductsManager() {
 							/>
 						</div>
 						<div className="col-md-6">
+							<label htmlFor="price">In Stock</label>
 							<input
 								type="number"
 								name="inStock"
@@ -134,6 +222,7 @@ function ProductsManager() {
 						id="description"
 						cols="30"
 						rows="4"
+						value={description}
 						className="d-block my-4 w-100 p2"
 						onChange={handleChangeInput}
 						placeholder="description"
@@ -144,6 +233,7 @@ function ProductsManager() {
 						id="content"
 						cols="30"
 						rows="6"
+						value={content}
 						className="d-block my-4 w-100 p2"
 						onChange={handleChangeInput}
 						placeholder="Content"
@@ -165,6 +255,10 @@ function ProductsManager() {
 							))}
 						</select>
 					</div>
+
+					<button className="btn btn-info my-2 px-4" type="submit">
+						{onEdit ? "Update" : "Create"}
+					</button>
 				</div>
 				<div className="col-md-6 my-4">
 					<div className="input-group mb-3">
@@ -201,9 +295,6 @@ function ProductsManager() {
 					</div>
 				</div>
 			</form>
-			<button className="btn btn-info mb-3 px-4" type="submit">
-				Create
-			</button>
 		</div>
 	);
 }
