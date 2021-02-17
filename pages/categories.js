@@ -104,6 +104,8 @@ function Categories() {
 							></i>
 							<i
 								className="fas fa-trash-alt mr-2 text-danger"
+								data-toggle="modal"
+								data-target="#exampleModal"
 								onClick={() =>
 									dispatch({
 										type: "ADD_MODAL",

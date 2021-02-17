@@ -12,6 +12,9 @@ export default async (req, res) => {
 		case "PUT":
 			await updateProduct(req, res);
 			break;
+		case "DELETE":
+			await deleteProduct(req, res);
+			break;
 		default:
 			// statements_def
 			break;
@@ -78,6 +81,22 @@ const updateProduct = async (req, res) => {
 		);
 
 		res.json({ msg: "Success!!!Update product" });
+	} catch (err) {
+		return res.status(500).json({ err: err.message });
+	}
+};
+
+const deleteProduct = async (req, res) => {
+	try {
+		const result = await auth(req, res);
+		if (result.role !== "admin")
+			return res.status(500).json({ err: "Not Valid" });
+
+		const { id } = req.query;
+
+		await Products.findByIdAndDelete(id);
+
+		res.json({ msg: "Delete Successc" });
 	} catch (err) {
 		return res.status(500).json({ err: err.message });
 	}
