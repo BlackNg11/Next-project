@@ -4,7 +4,7 @@ import { useState, useContext, useEffect } from "react";
 import { DataContext } from "../store/GlobalState";
 import Head from "next/head";
 import ProductItem from "../components/product/ProductItem";
-
+import Filter from "../components/Filter";
 import { useRouter } from "next/router";
 
 const Home = (props) => {
@@ -69,6 +69,8 @@ const Home = (props) => {
 			<Head>
 				<title>Home Page</title>
 			</Head>
+
+			<Filter state={state} />
 
 			{auth.user && auth.user.role === "admin" && (
 				<div
